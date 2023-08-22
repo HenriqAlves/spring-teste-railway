@@ -2,13 +2,11 @@ package com.lucasangelo.todosimple.services;
 
 import java.util.Optional;
 
-import javax.management.RuntimeErrorException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lucasangelo.todosimple.models.User;
-import com.lucasangelo.todosimple.repositories.TaskRepository;
 import com.lucasangelo.todosimple.repositories.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -18,8 +16,6 @@ public class UserService {
     
     @Autowired //*Substitui o construtor para ter acesso aos repositories, pois são interfaces e n classes */
     private UserRepository userRepository;
-    @Autowired
-    private TaskRepository taskRepository;
 
     public User findById(Long id){
 
@@ -34,7 +30,6 @@ public class UserService {
     public User create(User objeto){
         objeto.setId(null);
         objeto = this.userRepository.save(objeto);
-        this.taskRepository.saveAll(objeto.getTasks());
         return objeto;
     }
     
