@@ -16,6 +16,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
@@ -24,10 +25,10 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 public class User {
     public static final String TABLE_NAME = "user";
 
-    public interface createUser {
+    public interface CreateUser {
     }
 
-    public interface updateUser {
+    public interface UpdateUser {
     }
 
     @Id
@@ -36,15 +37,15 @@ public class User {
     private Long id;
 
     @Column(name = "username", length = 100, nullable = false, unique = true)
-    @NotNull
-    @NotEmpty
-    @Size(min = 4, max = 100)
+    @NotNull(groups = CreateUser.class)
+    @NotEmpty(groups = CreateUser.class)
+    @Size(groups = CreateUser.class, min = 4, max = 100)
     private String username;
 
     @JsonProperty(access = Access.WRITE_ONLY)
     @Column(name = "password", length = 50, nullable = false)
-    @Size(min = 2, max = 50)
-    @NotBlank
+    @Size(groups = {CreateUser.class,UpdateUser.class}, min = 2, max = 50)
+    @NotBlank(groups = {CreateUser.class, UpdateUser.class})
     private String password;
 
 
@@ -89,6 +90,7 @@ public class User {
         this.password = password;
     }
 
+    @JsonIgnore
     //* Getters e setters task
     public List<Task> getTasks() {
         return this.tasks;
